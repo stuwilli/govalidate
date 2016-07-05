@@ -1,15 +1,15 @@
 Govalidate
 =========
 
-[![Build Status](https://travis-ci.org/tonyhb/govalidate.svg?branch=master)](https://travis-ci.org/tonyhb/govalidate)
-[![GoDoc](https://godoc.org/github.com/tonyhb/govalidate?status.svg)](https://godoc.org/github.com/tonyhb/govalidate)
+[![Build Status](https://travis-ci.org/amasses/govalidate.svg?branch=master)](https://travis-ci.org/amasses/govalidate)
+[![GoDoc](https://godoc.org/github.com/amasses/govalidate?status.svg)](https://godoc.org/github.com/amasses/govalidate)
 
 Simple, fast and *extensible* validation for Go structs, using tags in all their
 goodness. It also validates anonymous structs automatically.
 
 ```
-GoCode   import github.com/tonyhb/govalidate
-CLI      go get -u github.com/tonyhb/govalidate
+GoCode   import github.com/amasses/govalidate
+CLI      go get -u github.com/amasses/govalidate
 ```
 
 ## Basic usage
@@ -19,13 +19,13 @@ Here's how to set up your struct:
 ```go
 package main
 
-import "github.com/tonyhb/govalidate"
+import "github.com/amasses/govalidate"
 
 type Page struct {
 	UUID   string `validate:"NotEmpty,UUID"`
 	URL    string `validate:"NotEmpty,URL"`
 	Author string `validate:"Email"`
-	Slug   string `validate:"Regexp:/^[\w-]+$/, MinLength:5, MaxLength:100"`
+	Slug   string `validate:"Regexp:/^[\w-]+$/, MinLength:5, MaxLength:100 Message:Please ensure the slug is alpha-numeric only (e.g. my-slug-here)"`
 }
 ```
 Really simple definitions. To validate, use the exported methods:
@@ -57,7 +57,7 @@ Validating anonymous structs:
 ```go
 package main
 
-import "github.com/tonyhb/govalidate"
+import "github.com/amasses/govalidate"
 
 type Author struct {
 	Name  string `validate:"NotEmpty"`
@@ -98,6 +98,7 @@ built in:
 - `NotZero` - passes if the field is numeric and not-zero
 - `GreaterThan:N` - passes if the field is numeric and over N
 - `LessThan:N` - passes if the field is numeric and less than N
+- `Message:custom message here` - passes an override for messages to be used in the validation error
 
 ## Adding custom validators
 
@@ -108,8 +109,8 @@ one is easy peasy:
 package yourvalidator
 
 import (
-	"github.com/tonyhb/govalidate/helper"
-	"github.com/tonyhb/govalidate/rules"
+	"github.com/amasses/govalidate/helper"
+	"github.com/amasses/govalidate/rules"
 )
 
 func init() {
@@ -126,6 +127,7 @@ func ValidationMethod(data rules.ValidationData) (err error) {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
+			Message: 				data.Message,
 		}
 	}
 
@@ -136,6 +138,7 @@ func ValidationMethod(data rules.ValidationData) (err error) {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is empty",
+			Message: 				data.Message,
 		}
 	}
 

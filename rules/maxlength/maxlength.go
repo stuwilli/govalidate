@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/tonyhb/govalidate/helper"
-	"github.com/tonyhb/govalidate/rules"
+	"github.com/amasses/govalidate/helper"
+	"github.com/amasses/govalidate/rules"
 )
 
 func init() {
@@ -20,6 +20,7 @@ func MaxLength(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
+			Message:        data.Message,
 		}
 	}
 
@@ -39,6 +40,7 @@ func MaxLength(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        fmt.Sprintf("is too long; it must be at most %d characters long", max),
+			Message:        data.Message,
 		}
 	}
 

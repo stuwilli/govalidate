@@ -5,8 +5,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/tonyhb/govalidate/helper"
-	"github.com/tonyhb/govalidate/rules"
+	"github.com/amasses/govalidate/helper"
+	"github.com/amasses/govalidate/rules"
 )
 
 func init() {
@@ -23,6 +23,7 @@ func URL(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
+			Message:        data.Message,
 		}
 	}
 
@@ -31,6 +32,7 @@ func URL(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a valid URL",
+			Message:        data.Message,
 		}
 	}
 
@@ -38,6 +40,7 @@ func URL(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        fmt.Sprintf("has an invalid scheme '%s'", parsed.Scheme),
+			Message:        data.Message,
 		}
 	}
 
@@ -45,6 +48,7 @@ func URL(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        fmt.Sprintf("has an invalid host ('%s')", parsed.Host),
+			Message:        data.Message,
 		}
 	}
 

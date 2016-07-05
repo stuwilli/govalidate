@@ -5,21 +5,21 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/tonyhb/govalidate/rules"
-	_ "github.com/tonyhb/govalidate/rules/alpha"
-	_ "github.com/tonyhb/govalidate/rules/alphanumeric"
-	_ "github.com/tonyhb/govalidate/rules/email"
-	_ "github.com/tonyhb/govalidate/rules/greaterthan"
-	_ "github.com/tonyhb/govalidate/rules/length"
-	_ "github.com/tonyhb/govalidate/rules/lessthan"
-	_ "github.com/tonyhb/govalidate/rules/maxlength"
-	_ "github.com/tonyhb/govalidate/rules/minlength"
-	_ "github.com/tonyhb/govalidate/rules/notempty"
-	_ "github.com/tonyhb/govalidate/rules/notzero"
-	_ "github.com/tonyhb/govalidate/rules/notzerotime"
-	_ "github.com/tonyhb/govalidate/rules/regexp"
-	_ "github.com/tonyhb/govalidate/rules/url"
-	_ "github.com/tonyhb/govalidate/rules/uuid"
+	"github.com/amasses/govalidate/rules"
+	_ "github.com/amasses/govalidate/rules/alpha"
+	_ "github.com/amasses/govalidate/rules/alphanumeric"
+	_ "github.com/amasses/govalidate/rules/email"
+	_ "github.com/amasses/govalidate/rules/greaterthan"
+	_ "github.com/amasses/govalidate/rules/length"
+	_ "github.com/amasses/govalidate/rules/lessthan"
+	_ "github.com/amasses/govalidate/rules/maxlength"
+	_ "github.com/amasses/govalidate/rules/minlength"
+	_ "github.com/amasses/govalidate/rules/notempty"
+	_ "github.com/amasses/govalidate/rules/notzero"
+	_ "github.com/amasses/govalidate/rules/notzerotime"
+	_ "github.com/amasses/govalidate/rules/regexp"
+	_ "github.com/amasses/govalidate/rules/url"
+	_ "github.com/amasses/govalidate/rules/uuid"
 )
 
 // Takes a struct, loops through all fields and calls check on any fields that
@@ -102,17 +102,23 @@ func Run(object interface{}, fieldsSlice ...string) error {
 }
 
 var rxRegexp = regexp.MustCompile(`Regexp:\/.+/`)
+var rxMessage = regexp.MustCompile(`Message:.+(,\s)?`)
 
 // Takes a field's value and the validation tag and applies each check
 // until either a test fails or all tests pass.
 func validateField(data interface{}, fieldName, tag string) (err error) {
+	// Grab any custom messages
+	var message string
+	message = rxMessage.FindString(tag)
+	message = strings.Replace(message, "Message:", "", -1)
+
 	// A tag can specify multiple validation rules which are delimited via ','.
 	// However, because we allow regular expressions we can't split the tag field
 	// via all commas to find our validation rules: we need to extract the regular expression
 	// first (in case it specifies a comma), and *then* run through our validation rules.
 	if match := rxRegexp.FindString(tag); match != "" {
 		// If we fail validating the regexp we can break here
-		if err := validateRule(data, fieldName, match); err != nil {
+		if err := validateRule(data, fieldName, match, message); err != nil {
 			return err
 		}
 		// Now we need to replace our regular expression from the tag list to continue
@@ -128,7 +134,7 @@ func validateField(data interface{}, fieldName, tag string) (err error) {
 			tag, next = tag[:i], tag[i+1:]
 		}
 
-		if err := validateRule(data, fieldName, tag); err != nil {
+		if err := validateRule(data, fieldName, tag, message); err != nil {
 			return err
 		}
 
@@ -141,7 +147,7 @@ func validateField(data interface{}, fieldName, tag string) (err error) {
 
 // Given a validation rule from a tag, run the associated validation methods and return
 // the result.
-func validateRule(data interface{}, fieldName, rule string) error {
+func validateRule(data interface{}, fieldName, rule, message string) error {
 	var args []string
 
 	// Remove any preceeding spaces from comma separated tags
@@ -172,9 +178,10 @@ func validateRule(data interface{}, fieldName, rule string) error {
 		return err
 	} else {
 		var data = rules.ValidationData{
-			Field: fieldName,
-			Value: data,
-			Args:  args,
+			Field:   fieldName,
+			Value:   data,
+			Args:    args,
+			Message: message,
 		}
 		return method(data)
 	}

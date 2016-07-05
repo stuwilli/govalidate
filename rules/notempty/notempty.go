@@ -1,8 +1,8 @@
 package notempty
 
 import (
-	"github.com/tonyhb/govalidate/helper"
-	"github.com/tonyhb/govalidate/rules"
+	"github.com/amasses/govalidate/helper"
+	"github.com/amasses/govalidate/rules"
 )
 
 func init() {
@@ -17,12 +17,14 @@ func NotEmpty(data rules.ValidationData) (err error) {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
+			Message:        data.Message,
 		}
 	}
 	if v == "" {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is empty",
+			Message:        data.Message,
 		}
 	}
 	return nil

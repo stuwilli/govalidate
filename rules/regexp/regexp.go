@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/tonyhb/govalidate/helper"
-	"github.com/tonyhb/govalidate/rules"
+	"github.com/amasses/govalidate/helper"
+	"github.com/amasses/govalidate/rules"
 )
 
 func init() {
@@ -19,6 +19,7 @@ func Regexp(data rules.ValidationData) (err error) {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
+			Message:        data.Message,
 		}
 	}
 
@@ -35,6 +36,7 @@ func Regexp(data rules.ValidationData) (err error) {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "doesn't match regular expression",
+			Message:        data.Message,
 		}
 	}
 

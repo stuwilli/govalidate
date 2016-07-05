@@ -3,8 +3,8 @@ package uuid
 import (
 	"regexp"
 
-	"github.com/tonyhb/govalidate/helper"
-	"github.com/tonyhb/govalidate/rules"
+	"github.com/amasses/govalidate/helper"
+	"github.com/amasses/govalidate/rules"
 )
 
 func init() {
@@ -19,6 +19,7 @@ func UUID(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
+			Message:        data.Message,
 		}
 	}
 
@@ -26,6 +27,7 @@ func UUID(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is an invalid UUID",
+			Message:        data.Message,
 		}
 	}
 

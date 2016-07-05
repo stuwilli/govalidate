@@ -1,8 +1,8 @@
 package notzero
 
 import (
-	"github.com/tonyhb/govalidate/helper"
-	"github.com/tonyhb/govalidate/rules"
+	"github.com/amasses/govalidate/helper"
+	"github.com/amasses/govalidate/rules"
 )
 
 func init() {
@@ -17,6 +17,7 @@ func NotZero(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not numeric",
+			Message:        data.Message,
 		}
 	}
 
@@ -24,6 +25,7 @@ func NotZero(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is 0",
+			Message:        data.Message,
 		}
 	}
 

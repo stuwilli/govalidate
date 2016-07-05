@@ -3,8 +3,8 @@ package email
 import (
 	"regexp"
 
-	"github.com/tonyhb/govalidate/helper"
-	"github.com/tonyhb/govalidate/rules"
+	"github.com/amasses/govalidate/helper"
+	"github.com/amasses/govalidate/rules"
 )
 
 func init() {
@@ -17,6 +17,7 @@ func Email(data rules.ValidationData) (err error) {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
+			Message:        data.Message,
 		}
 	}
 
@@ -27,6 +28,7 @@ func Email(data rules.ValidationData) (err error) {
 	return rules.ErrInvalid{
 		ValidationData: data,
 		Failure:        "is not a valid email address",
+		Message:        data.Message,
 	}
 }
 

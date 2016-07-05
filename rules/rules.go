@@ -13,6 +13,9 @@ type ValidationData struct {
 	// The name of the field being validated
 	Field string
 
+	// The override message for validation failure
+	Message string
+
 	// The value of the struct field being validated
 	Value interface{}
 

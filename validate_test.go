@@ -3,14 +3,36 @@ package validate
 // @TODO: Clean up the tests a bit
 
 import (
+	"strings"
 	"testing"
 	"time"
 
-	"github.com/tonyhb/govalidate/rules"
+	"github.com/amasses/govalidate/rules"
 )
 
 type Anonymous struct {
 	Email string `validate:"NotEmpty"`
+}
+
+func TestCustomMessage(t *testing.T) {
+	object := struct {
+		Anonymous
+		Name string `validate:"NotEmpty, Message:The field name cannot be empty - please try again"`
+	}{
+		Name: "",
+	}
+
+	err := Run(object)
+	if err == nil {
+		t.Fatalf("Expected Validate to validate anonymous fields")
+	}
+
+	vErr := err.(ValidationError)
+
+	if strings.Index(vErr.Error(), "The field name cannot be empty - please try again") < 0 {
+		t.Fatalf("Could not find custom message in result. Got %s", vErr.Error())
+	}
+
 }
 
 func TestAnonymousStructs(t *testing.T) {

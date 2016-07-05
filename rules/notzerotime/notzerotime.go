@@ -3,7 +3,7 @@ package notzerotime
 import (
 	"time"
 
-	"github.com/tonyhb/govalidate/rules"
+	"github.com/amasses/govalidate/rules"
 )
 
 func init() {
@@ -17,6 +17,7 @@ func NotZeroTime(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a Time type",
+			Message:        data.Message,
 		}
 	}
 
@@ -24,6 +25,7 @@ func NotZeroTime(data rules.ValidationData) error {
 		return rules.ErrInvalid{
 			ValidationData: data,
 			Failure:        "has a zero value",
+			Message:        data.Message,
 		}
 	}
 
