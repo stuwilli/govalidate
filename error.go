@@ -41,6 +41,10 @@ func (ve ValidationError) Error() string {
 	return str
 }
 
+func (ve ValidationError) Errors() []string {
+	return ve.Failures
+}
+
 func (ve ValidationError) Stringify() string {
 	return ve.Error()
 }
