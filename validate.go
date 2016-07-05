@@ -110,6 +110,7 @@ func validateField(data interface{}, fieldName, tag string) (err error) {
 	// Grab any custom messages
 	var message string
 	message = rxMessage.FindString(tag)
+	tag = rxMessage.ReplaceAllString(tag, "")
 	message = strings.Replace(message, "Message:", "", -1)
 
 	// A tag can specify multiple validation rules which are delimited via ','.
