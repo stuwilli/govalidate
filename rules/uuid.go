@@ -1,22 +1,17 @@
-package uuid
+package rules
 
 import (
 	"regexp"
 
-	"github.com/amasses/govalidate/helper"
-	"github.com/amasses/govalidate/rules"
+	"github.com/stuwilli/govalidate/helper"
 )
 
-func init() {
-	rules.Add("UUID", UUID)
-}
-
-// Used to check whether a string has at most N characters
+//UUID Used to check whether a string has at most N characters
 // Fails if data is a string and its length is more than the specified comparator. Passes in all other cases.
-func UUID(data rules.ValidationData) error {
+func UUID(data ValidationData) error {
 	v, err := helper.ToString(data.Value)
 	if err != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
 			Message:        data.Message,
@@ -24,7 +19,7 @@ func UUID(data rules.ValidationData) error {
 	}
 
 	if !IsUUID(v) {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is an invalid UUID",
 			Message:        data.Message,
@@ -34,6 +29,7 @@ func UUID(data rules.ValidationData) error {
 	return nil
 }
 
+//IsUUID ...
 func IsUUID(uuid string) bool {
 	var hexPattern = "^(urn\\:uuid\\:)?\\{?([a-z0-9]{8})-([a-z0-9]{4})-([1-5][a-z0-9]{3})-([a-z0-9]{4})-([a-z0-9]{12})\\}?$"
 	re := regexp.MustCompile(hexPattern)

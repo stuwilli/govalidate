@@ -1,22 +1,17 @@
-package regexp
+package rules
 
 import (
 	"fmt"
 	"regexp"
 
-	"github.com/amasses/govalidate/helper"
-	"github.com/amasses/govalidate/rules"
+	"github.com/stuwilli/govalidate/helper"
 )
 
-func init() {
-	rules.Add("Regexp", Regexp)
-}
-
-// Validates that a string only contains alphabetic characters
-func Regexp(data rules.ValidationData) (err error) {
+//Regexp Validates that a string only contains alphabetic characters
+func Regexp(data ValidationData) (err error) {
 	v, err := helper.ToString(data.Value)
 	if err != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
 			Message:        data.Message,
@@ -33,7 +28,7 @@ func Regexp(data rules.ValidationData) (err error) {
 	re := data.Args[0]
 	re = re[1 : len(re)-1]
 	if regexp.MustCompile(re).MatchString(v) == false {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "doesn't match regular expression",
 			Message:        data.Message,

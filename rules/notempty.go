@@ -1,27 +1,20 @@
-package notempty
+package rules
 
-import (
-	"github.com/amasses/govalidate/helper"
-	"github.com/amasses/govalidate/rules"
-)
+import "github.com/stuwilli/govalidate/helper"
 
-func init() {
-	rules.Add("NotEmpty", NotEmpty)
-}
-
-// Checks whether a string is empty.
+//NotEmpty Checks whether a string is empty.
 // Passes if the data is a non-empty string. Fails if the data isn't a string, or the data is an empty string.
-func NotEmpty(data rules.ValidationData) (err error) {
+func NotEmpty(data ValidationData) (err error) {
 	v, ok := helper.ToString(data.Value)
 	if ok != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
 			Message:        data.Message,
 		}
 	}
 	if v == "" {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is empty",
 			Message:        data.Message,

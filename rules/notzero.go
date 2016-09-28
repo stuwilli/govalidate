@@ -1,20 +1,13 @@
-package notzero
+package rules
 
-import (
-	"github.com/amasses/govalidate/helper"
-	"github.com/amasses/govalidate/rules"
-)
+import "github.com/stuwilli/govalidate/helper"
 
-func init() {
-	rules.Add("NotZero", NotZero)
-}
-
-// Checks whether a float or int type is 0. This could mean the data is above *or* below 0.
+//NotZero Checks whether a float or int type is 0. This could mean the data is above *or* below 0.
 // Fails if the data isn't a float/int type, or the data is exactly 0.
-func NotZero(data rules.ValidationData) error {
+func NotZero(data ValidationData) error {
 	v, err := helper.ToFloat64(data.Value)
 	if err != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not numeric",
 			Message:        data.Message,
@@ -22,7 +15,7 @@ func NotZero(data rules.ValidationData) error {
 	}
 
 	if v == 0 {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is 0",
 			Message:        data.Message,

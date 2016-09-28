@@ -1,21 +1,16 @@
-package alphanumeric
+package rules
 
 import (
 	"regexp"
 
-	"github.com/amasses/govalidate/helper"
-	"github.com/amasses/govalidate/rules"
+	"github.com/stuwilli/govalidate/helper"
 )
 
-func init() {
-	rules.Add("Alphanumeric", Alphanumeric)
-}
-
-// Validates that a string only contains alphabetic or numeric characters
-func Alphanumeric(data rules.ValidationData) (err error) {
+//Alphanumeric Validates that a string only contains alphabetic or numeric characters
+func Alphanumeric(data ValidationData) (err error) {
 	v, ok := helper.ToString(data.Value)
 	if ok != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
 			Message:        data.Message,
@@ -23,7 +18,7 @@ func Alphanumeric(data rules.ValidationData) (err error) {
 	}
 
 	if regexp.MustCompile(`[^a-zA-Z0-9]+`).MatchString(v) {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "contains non-alphanumeric characters",
 			Message:        data.Message,

@@ -5,24 +5,10 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/amasses/govalidate/rules"
-	_ "github.com/amasses/govalidate/rules/alpha"
-	_ "github.com/amasses/govalidate/rules/alphanumeric"
-	_ "github.com/amasses/govalidate/rules/email"
-	_ "github.com/amasses/govalidate/rules/greaterthan"
-	_ "github.com/amasses/govalidate/rules/length"
-	_ "github.com/amasses/govalidate/rules/lessthan"
-	_ "github.com/amasses/govalidate/rules/maxlength"
-	_ "github.com/amasses/govalidate/rules/minlength"
-	_ "github.com/amasses/govalidate/rules/notempty"
-	_ "github.com/amasses/govalidate/rules/notzero"
-	_ "github.com/amasses/govalidate/rules/notzerotime"
-	_ "github.com/amasses/govalidate/rules/regexp"
-	_ "github.com/amasses/govalidate/rules/url"
-	_ "github.com/amasses/govalidate/rules/uuid"
+	"github.com/stuwilli/govalidate/rules"
 )
 
-// Takes a struct, loops through all fields and calls check on any fields that
+// Run ... Takes a struct, loops through all fields and calls check on any fields that
 // have a validate tag. If the field is an anonymous struct recursively run
 // validation on it.
 func Run(object interface{}, fieldsSlice ...string) error {
@@ -149,8 +135,10 @@ func validateField(data interface{}, fieldName, tag string) (err error) {
 // Given a validation rule from a tag, run the associated validation methods and return
 // the result.
 func validateRule(data interface{}, fieldName, rule, message string) error {
-	var args []string
 
+	var args []string
+	var err error
+	var method rules.ValidatorFunc
 	// Remove any preceeding spaces from comma separated tags
 	rule = strings.TrimLeft(rule, " ")
 
@@ -175,15 +163,15 @@ func validateRule(data interface{}, fieldName, rule, message string) error {
 
 	// Attempt to validate the data using methods registered with the rules
 	// sub package
-	if method, err := rules.Get(rule); err != nil {
+	if method, err = rules.Get(rule); err != nil {
 		return err
-	} else {
-		var data = rules.ValidationData{
-			Field:   fieldName,
-			Value:   data,
-			Args:    args,
-			Message: message,
-		}
-		return method(data)
 	}
+
+	var out = rules.ValidationData{
+		Field:   fieldName,
+		Value:   data,
+		Args:    args,
+		Message: message,
+	}
+	return method(out)
 }

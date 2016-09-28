@@ -1,21 +1,16 @@
-package alpha
+package rules
 
 import (
 	"regexp"
 
-	"github.com/amasses/govalidate/helper"
-	"github.com/amasses/govalidate/rules"
+	"github.com/stuwilli/govalidate/helper"
 )
 
-func init() {
-	rules.Add("Alpha", Alpha)
-}
-
-// Validates that a string only contains alphabetic characters
-func Alpha(data rules.ValidationData) (err error) {
+//Alpha Validates that a string only contains alphabetic characters
+func Alpha(data ValidationData) (err error) {
 	v, ok := helper.ToString(data.Value)
 	if ok != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
 			Message:        data.Message,
@@ -23,7 +18,7 @@ func Alpha(data rules.ValidationData) (err error) {
 	}
 
 	if regexp.MustCompile(`[^a-zA-Z]+`).MatchString(v) {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "contains non-alphabetic characters",
 			Message:        data.Message,

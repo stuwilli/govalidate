@@ -7,8 +7,23 @@ var rules map[string]ValidatorFunc
 
 func init() {
 	rules = map[string]ValidatorFunc{}
+	Add("Alpha", Alpha)
+	Add("Alphanumeric", Alphanumeric)
+	Add("Email", Email)
+	Add("GreaterThan", GreaterThan)
+	Add("Length", Length)
+	Add("LessThan", LessThan)
+	Add("MaxLength", MaxLength)
+	Add("MinLength", MinLength)
+	Add("NotEmpty", NotEmpty)
+	Add("NotZero", NotZero)
+	Add("NotZeroTime", NotZeroTime)
+	Add("Regexp", Regexp)
+	Add("URL", URL)
+	Add("UUID", UUID)
 }
 
+//ValidationData ...
 type ValidationData struct {
 	// The name of the field being validated
 	Field string
@@ -30,13 +45,14 @@ type ValidationData struct {
 	Args []string
 }
 
-// All validation methods must return an ErrInvalid error type if the data
+//ValidatorFunc All validation methods must return an ErrInvalid error type if the data
 // is invalid, or nil if the data is valid
 type ValidatorFunc func(ValidationData) error
 
 // Add a new validation method for a given struct tag. If a validation method
 // already exists this will return an error
 func Add(tag string, method ValidatorFunc) (err error) {
+
 	if _, ok := rules[tag]; ok {
 		return fmt.Errorf("Validation method for '%s' already exists", tag)
 	}
@@ -45,11 +61,13 @@ func Add(tag string, method ValidatorFunc) (err error) {
 	return
 }
 
-// Return a registered validation method for a given tag
+//Get Return a registered validation method for a given tag
 func Get(tag string) (method ValidatorFunc, err error) {
-	if m, ok := rules[tag]; !ok {
+
+	m, ok := rules[tag]
+	if !ok {
 		return nil, ErrNoValidationMethod{Tag: tag}
-	} else {
-		return m, nil
 	}
+
+	return m, nil
 }

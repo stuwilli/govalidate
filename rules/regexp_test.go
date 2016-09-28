@@ -1,13 +1,9 @@
-package regexp
+package rules
 
-import (
-	"testing"
-
-	"github.com/amasses/govalidate/rules"
-)
+import "testing"
 
 func TestRegexp(t *testing.T) {
-	object := rules.ValidationData{
+	object := ValidationData{
 		Field: "Test",
 		Args:  []string{"/^[a-zA-Z]{3,5}[0-9]+$/"},
 	}

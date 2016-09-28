@@ -1,5 +1,6 @@
 package validate
 
+//ValidationError ...
 type ValidationError struct {
 	Failures []string
 
@@ -41,10 +42,12 @@ func (ve ValidationError) Error() string {
 	return str
 }
 
+//Errors ...
 func (ve ValidationError) Errors() []string {
 	return ve.Failures
 }
 
+//Stringify ...
 func (ve ValidationError) Stringify() string {
 	return ve.Error()
 }

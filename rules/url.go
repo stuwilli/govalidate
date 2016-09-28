@@ -1,26 +1,21 @@
-package url
+package rules
 
 import (
 	"fmt"
 	"net/url"
 	"strings"
 
-	"github.com/amasses/govalidate/helper"
-	"github.com/amasses/govalidate/rules"
+	"github.com/stuwilli/govalidate/helper"
 )
 
-func init() {
-	rules.Add("URL", URL)
-}
-
-// Validates a URL using url.Parse() in the net/url library.
+//URL Validates a URL using url.Parse() in the net/url library.
 // For a valid URL, the following need to be present in a parsed URL:
 // * Scheme (either http or https)
 // * Host (without a backslash)
-func URL(data rules.ValidationData) error {
+func URL(data ValidationData) error {
 	v, err := helper.ToString(data.Value)
 	if err != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
 			Message:        data.Message,
@@ -29,7 +24,7 @@ func URL(data rules.ValidationData) error {
 
 	parsed, err := url.Parse(v)
 	if err != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a valid URL",
 			Message:        data.Message,
@@ -37,7 +32,7 @@ func URL(data rules.ValidationData) error {
 	}
 
 	if parsed.Scheme != "http" && parsed.Scheme != "https" {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        fmt.Sprintf("has an invalid scheme '%s'", parsed.Scheme),
 			Message:        data.Message,
@@ -45,7 +40,7 @@ func URL(data rules.ValidationData) error {
 	}
 
 	if parsed.Host == "" || strings.IndexRune(parsed.Host, '\\') > 0 {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        fmt.Sprintf("has an invalid host ('%s')", parsed.Host),
 			Message:        data.Message,

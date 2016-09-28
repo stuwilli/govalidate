@@ -2,6 +2,7 @@ package rules
 
 import "fmt"
 
+//ErrInvalid ...
 type ErrInvalid struct {
 	ValidationData
 	Failure string
@@ -15,6 +16,7 @@ func (t ErrInvalid) Error() string {
 	return fmt.Sprintf("Field '%s' %s", t.Field, t.Failure)
 }
 
+//ErrNoValidationMethod ...
 type ErrNoValidationMethod struct {
 	Tag string
 }

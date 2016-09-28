@@ -1,25 +1,20 @@
-package lessthan
+package rules
 
 import (
 	"fmt"
 	"strconv"
 
-	"github.com/amasses/govalidate/helper"
-	"github.com/amasses/govalidate/rules"
+	"github.com/stuwilli/govalidate/helper"
 )
 
-func init() {
-	rules.Add("LessThan", LessThan)
-}
-
-// Passes if the data is a float/int and is less than the specified integer.
+//LessThan Passes if the data is a float/int and is less than the specified integer.
 // Note that this is *not* a less than or equals check, and this only comapres
 // floats/ints to a predefined integer specified in your tag.
 // Fails if the data is not a float/int or the data is less than or equals the comparator
-func LessThan(data rules.ValidationData) error {
+func LessThan(data ValidationData) error {
 	v, err := helper.ToFloat64(data.Value)
 	if err != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not numeric",
 			Message:        data.Message,
@@ -38,9 +33,9 @@ func LessThan(data rules.ValidationData) error {
 	}
 
 	if v > max {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
-			Failure:        fmt.Sprintf("must be less than %d", max),
+			Failure:        fmt.Sprintf("must be less than %f", max),
 			Message:        data.Message,
 		}
 	}

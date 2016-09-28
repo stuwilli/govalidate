@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/amasses/govalidate/rules"
+	"github.com/stuwilli/govalidate/rules"
 )
 
 type Anonymous struct {
@@ -24,7 +24,7 @@ func TestCustomMessage(t *testing.T) {
 
 	err := Run(object)
 	if err == nil {
-		t.Fatalf("Expected Validate to validate anonymous fields")
+		t.Error("Expected Validate to validate anonymous fields")
 	}
 
 	vErr := err.(ValidationError)
@@ -521,7 +521,7 @@ func TestWithPointer(t *testing.T) {
 	}
 
 	if err := Run(object); err != nil {
-		t.Errorf("Unexpected error", err.Error())
+		t.Error("Unexpected error", err.Error())
 	}
 }
 
@@ -536,20 +536,20 @@ func TestValidateFields(t *testing.T) {
 
 	err := Run(object)
 	if err == nil {
-		t.Fatal()
+		t.Fatal(err)
 	}
 
 	vErr, ok := err.(ValidationError)
 	if !ok {
-		t.Fatal()
+		t.Fatal(vErr)
 	}
 
 	if len(vErr.Fields) != 1 {
-		t.Fatal()
+		t.Fatal(vErr)
 	}
 
 	if _, ok := vErr.Fields["Invalid"]; !ok {
-		t.Fatal()
+		t.Fatal(vErr)
 	}
 
 }

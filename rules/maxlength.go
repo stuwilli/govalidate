@@ -1,23 +1,18 @@
-package maxlength
+package rules
 
 import (
 	"fmt"
 	"strconv"
 
-	"github.com/amasses/govalidate/helper"
-	"github.com/amasses/govalidate/rules"
+	"github.com/stuwilli/govalidate/helper"
 )
 
-func init() {
-	rules.Add("MaxLength", MaxLength)
-}
-
-// Used to check whether a string has at most N characters
+//MaxLength Used to check whether a string has at most N characters
 // Fails if data is a string and its length is more than the specified comparator. Passes in all other cases.
-func MaxLength(data rules.ValidationData) error {
+func MaxLength(data ValidationData) error {
 	v, err := helper.ToString(data.Value)
 	if err != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
 			Message:        data.Message,
@@ -37,7 +32,7 @@ func MaxLength(data rules.ValidationData) error {
 	// Typecast our argument and test
 
 	if len(v) > max {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        fmt.Sprintf("is too long; it must be at most %d characters long", max),
 			Message:        data.Message,

@@ -1,22 +1,17 @@
-package length
+package rules
 
 import (
 	"fmt"
 	"strconv"
 
-	"github.com/amasses/govalidate/helper"
-	"github.com/amasses/govalidate/rules"
+	"github.com/stuwilli/govalidate/helper"
 )
 
-func init() {
-	rules.Add("Length", Length)
-}
-
-// Validates that a string is N characters long
-func Length(data rules.ValidationData) error {
+//Length Validates that a string is N characters long
+func Length(data ValidationData) error {
 	v, err := helper.ToString(data.Value)
 	if err != nil {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        "is not a string",
 			Message:        data.Message,
@@ -35,7 +30,7 @@ func Length(data rules.ValidationData) error {
 	}
 
 	if len(v) != length {
-		return rules.ErrInvalid{
+		return ErrInvalid{
 			ValidationData: data,
 			Failure:        fmt.Sprintf("must be %d characters long", length),
 			Message:        data.Message,

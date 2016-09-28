@@ -1,10 +1,6 @@
-package notempty
+package rules
 
-import (
-	"testing"
-
-	"github.com/amasses/govalidate/rules"
-)
+import "testing"
 
 func TestNotEmpty(t *testing.T) {
 	var invalid = []interface{}{
@@ -18,7 +14,7 @@ func TestNotEmpty(t *testing.T) {
 		"",
 	}
 
-	object := rules.ValidationData{
+	object := ValidationData{
 		Field: "Test",
 	}
 
