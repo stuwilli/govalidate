@@ -8,12 +8,44 @@ import (
 	"github.com/stuwilli/govalidate/rules"
 )
 
-// Run ... Takes a struct, loops through all fields and calls check on any fields that
-// have a validate tag. If the field is an anonymous struct recursively run
-// validation on it.
+//ValidationErrorMap ...
+type ValidationErrorMap struct {
+	Err map[string]string `json:"error"`
+}
+
+func (ve *ValidationErrorMap) addFailure(field, msg string) {
+	ve.Err[field] = msg
+}
+
+//Merge ...
+func (ve *ValidationErrorMap) Merge(other ValidationErrorMap) {
+
+	for k, v := range other.Err {
+		ve.Err[k] = v
+	}
+}
+
+//Error ...
+func (ve ValidationErrorMap) Error() string {
+
+	var str = "The following errors occured during validation: "
+	for _, e := range ve.Err {
+		str += e + ". "
+	}
+	return str
+}
+
+//Errors ...
+func (ve ValidationErrorMap) Errors() []string {
+
+	return []string{""}
+}
+
+//Run ...
 func Run(object interface{}, fieldsSlice ...string) error {
-	pass := true // We'll override this if checking returns false
-	err := ValidationError{}
+
+	pass := true
+	err := ValidationErrorMap{Err: make(map[string]string)}
 
 	// If we have been passed a slice of fields to valiate - to check only a
 	// subset of fields - change the slice into a map for O(1) lookups instead
@@ -45,11 +77,11 @@ func Run(object interface{}, fieldsSlice ...string) error {
 				pass = false
 
 				// A non validation error occurred: return this immediately
-				if _, ok := anonErr.(ValidationError); !ok {
+				if _, ok := anonErr.(ValidationErrorMap); !ok {
 					return anonErr
 				}
 
-				err.Merge(anonErr.(ValidationError))
+				err.Merge(anonErr.(ValidationErrorMap))
 			}
 		}
 
@@ -85,6 +117,12 @@ func Run(object interface{}, fieldsSlice ...string) error {
 	}
 
 	return err
+}
+
+//ValidationToErrorMap ...
+func ValidationToErrorMap(err error) map[string]string {
+
+	return err.(ValidationErrorMap).Err
 }
 
 var rxRegexp = regexp.MustCompile(`Regexp:\/.+/`)

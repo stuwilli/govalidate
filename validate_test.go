@@ -27,7 +27,7 @@ func TestCustomMessage(t *testing.T) {
 		t.Error("Expected Validate to validate anonymous fields")
 	}
 
-	vErr := err.(ValidationError)
+	vErr := err.(ValidationErrorMap)
 
 	if strings.Index(vErr.Error(), "The field name cannot be empty - please try again") < 0 {
 		t.Fatalf("Could not find custom message in result. Got %s", vErr.Error())
@@ -48,19 +48,19 @@ func TestAnonymousStructs(t *testing.T) {
 		t.Fatalf("Expected Validate to validate anonymous fields")
 	}
 
-	vErr := err.(ValidationError)
+	vErr := err.(ValidationErrorMap)
 
 	// Validation errors should concatenate the struct and anonymous struct
 	// errors together
-	if len(vErr.Fields) != 2 {
+	if len(vErr.Err) != 2 {
 		t.Fatalf("Expected ValidationError to merge Anonymous Struct errors")
 	}
 
-	if _, ok := vErr.Fields["Name"]; !ok {
+	if _, ok := vErr.Err["Name"]; !ok {
 		t.Fatalf("Expected ValidationError.Field to contain standard field names")
 	}
 
-	if _, ok := vErr.Fields["Email"]; !ok {
+	if _, ok := vErr.Err["Email"]; !ok {
 		t.Fatalf("Expected ValidationError.Field to contain anonymous field names")
 	}
 }
@@ -539,16 +539,16 @@ func TestValidateFields(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	vErr, ok := err.(ValidationError)
+	vErr, ok := err.(ValidationErrorMap)
 	if !ok {
 		t.Fatal(vErr)
 	}
 
-	if len(vErr.Fields) != 1 {
+	if len(vErr.Err) != 1 {
 		t.Fatal(vErr)
 	}
 
-	if _, ok := vErr.Fields["Invalid"]; !ok {
+	if _, ok := vErr.Err["Invalid"]; !ok {
 		t.Fatal(vErr)
 	}
 
