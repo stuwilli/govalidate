@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"unicode"
 
 	"github.com/stuwilli/govalidate/rules"
 )
@@ -14,6 +15,10 @@ type ValidationErrorMap struct {
 }
 
 func (ve *ValidationErrorMap) addFailure(field, msg string) {
+
+	a := []rune(field)
+	a[0] = unicode.ToLower(a[0])
+	field = string(a)
 	ve.Err[field] = msg
 }
 

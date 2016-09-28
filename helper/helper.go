@@ -2,6 +2,7 @@ package helper
 
 import "errors"
 
+//IsUint ...
 func IsUint(data interface{}) bool {
 	switch data.(type) {
 	case uint64, uint32, uint16, uint8, uint:
@@ -10,6 +11,7 @@ func IsUint(data interface{}) bool {
 	return false
 }
 
+//ToUint64 ...
 func ToUint64(data interface{}) (uint64, error) {
 	switch data.(type) {
 	case uint64:
@@ -26,7 +28,7 @@ func ToUint64(data interface{}) (uint64, error) {
 	return 0, errors.New("Invalid conversion to uint64")
 }
 
-// Helper method, converting all int and float types in an interface to a float64.
+//ToFloat64 Helper method, converting all int and float types in an interface to a float64.
 func ToFloat64(data interface{}) (float64, error) {
 	switch data.(type) {
 	case float64:
@@ -47,6 +49,7 @@ func ToFloat64(data interface{}) (float64, error) {
 	return 0, errors.New("Invalid conversion to float64")
 }
 
+//ToString ...
 func ToString(data interface{}) (string, error) {
 	switch data.(type) {
 	case string:
