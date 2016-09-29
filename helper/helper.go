@@ -49,6 +49,8 @@ func ToFloat64(data interface{}) (float64, error) {
 		return float64(data.(int8)), nil
 	case int:
 		return float64(data.(int)), nil
+	case null.Int:
+		return float64(data.(null.Int).Int64), nil
 	}
 	return 0, errors.New("Invalid conversion to float64")
 }
