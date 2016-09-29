@@ -1,6 +1,10 @@
 package helper
 
-import "errors"
+import (
+	"errors"
+
+	null "gopkg.in/guregu/null.v3"
+)
 
 //IsUint ...
 func IsUint(data interface{}) bool {
@@ -58,6 +62,8 @@ func ToString(data interface{}) (string, error) {
 		return string(data.([]byte)), nil
 	case []rune:
 		return string(data.([]rune)), nil
+	case null.String:
+		return data.(null.String).String, nil
 	}
 
 	return "", errors.New("Invalid conversion to string")
