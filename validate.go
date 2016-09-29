@@ -9,12 +9,12 @@ import (
 	"github.com/stuwilli/govalidate/rules"
 )
 
-//ValidationErrorMap ...
-type ValidationErrorMap struct {
+//ValidationError ...
+type ValidationError struct {
 	Err map[string]string `json:"error"`
 }
 
-func (ve *ValidationErrorMap) addFailure(field, msg string) {
+func (ve *ValidationError) addFailure(field, msg string) {
 
 	a := []rune(field)
 	a[0] = unicode.ToLower(a[0])
@@ -23,7 +23,7 @@ func (ve *ValidationErrorMap) addFailure(field, msg string) {
 }
 
 //Merge ...
-func (ve *ValidationErrorMap) Merge(other ValidationErrorMap) {
+func (ve *ValidationError) Merge(other ValidationError) {
 
 	for k, v := range other.Err {
 		ve.Err[k] = v
@@ -31,7 +31,7 @@ func (ve *ValidationErrorMap) Merge(other ValidationErrorMap) {
 }
 
 //Error ...
-func (ve ValidationErrorMap) Error() string {
+func (ve ValidationError) Error() string {
 
 	var str = "The following errors occured during validation: "
 	for _, e := range ve.Err {
@@ -41,16 +41,16 @@ func (ve ValidationErrorMap) Error() string {
 }
 
 //Errors ...
-func (ve ValidationErrorMap) Errors() []string {
+func (ve ValidationError) Errors() map[string]string {
 
-	return []string{""}
+	return ve.Err
 }
 
 //Run ...
 func Run(object interface{}, fieldsSlice ...string) error {
 
 	pass := true
-	err := ValidationErrorMap{Err: make(map[string]string)}
+	err := ValidationError{Err: make(map[string]string)}
 
 	// If we have been passed a slice of fields to valiate - to check only a
 	// subset of fields - change the slice into a map for O(1) lookups instead
@@ -82,11 +82,11 @@ func Run(object interface{}, fieldsSlice ...string) error {
 				pass = false
 
 				// A non validation error occurred: return this immediately
-				if _, ok := anonErr.(ValidationErrorMap); !ok {
+				if _, ok := anonErr.(ValidationError); !ok {
 					return anonErr
 				}
 
-				err.Merge(anonErr.(ValidationErrorMap))
+				err.Merge(anonErr.(ValidationError))
 			}
 		}
 
@@ -124,10 +124,10 @@ func Run(object interface{}, fieldsSlice ...string) error {
 	return err
 }
 
-//ValidationToErrorMap ...
-func ValidationToErrorMap(err error) map[string]string {
+//CastError ...
+func CastError(err error) ValidationError {
 
-	return err.(ValidationErrorMap).Err
+	return err.(ValidationError)
 }
 
 var rxRegexp = regexp.MustCompile(`Regexp:\/.+/`)

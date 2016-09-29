@@ -27,7 +27,7 @@ func TestCustomMessage(t *testing.T) {
 		t.Error("Expected Validate to validate anonymous fields")
 	}
 
-	vErr := err.(ValidationErrorMap)
+	vErr := err.(ValidationError)
 
 	if strings.Index(vErr.Error(), "The field name cannot be empty - please try again") < 0 {
 		t.Fatalf("Could not find custom message in result. Got %s", vErr.Error())
@@ -48,7 +48,7 @@ func TestAnonymousStructs(t *testing.T) {
 		t.Fatalf("Expected Validate to validate anonymous fields")
 	}
 
-	vErr := err.(ValidationErrorMap)
+	vErr := err.(ValidationError)
 
 	// Validation errors should concatenate the struct and anonymous struct
 	// errors together
@@ -539,7 +539,7 @@ func TestValidateFields(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	vErr, ok := err.(ValidationErrorMap)
+	vErr, ok := err.(ValidationError)
 	if !ok {
 		t.Fatal(vErr)
 	}

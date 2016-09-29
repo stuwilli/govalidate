@@ -1,8 +1,9 @@
 Govalidate
 =========
 
-[![Build Status](https://travis-ci.org/amasses/govalidate.svg?branch=master)](https://travis-ci.org/amasses/govalidate)
-[![GoDoc](https://godoc.org/github.com/amasses/govalidate?status.svg)](https://godoc.org/github.com/amasses/govalidate)
+Forked from [Amasses](https://github.com/amasses/govalidate) fork of [Tonyhb's](https://github.com/tonyhb/govalidate) govalidate project.
+
+This fork has been reworked to return errors as a key value map.
 
 Simple, fast and *extensible* validation for Go structs, using tags in all their
 goodness. It also validates anonymous structs automatically.
@@ -19,7 +20,7 @@ Here's how to set up your struct:
 ```go
 package main
 
-import "github.com/amasses/govalidate"
+import "github.com/stuwilli/govalidate"
 
 type Page struct {
 	UUID   string `validate:"NotEmpty,UUID"`
@@ -146,68 +147,3 @@ func ValidationMethod(data rules.ValidationData) (err error) {
 	return nil
 }
 ```
-
-## Testing
-
-You can test that validation rules are working as expected:
-
-```go
-type User struct {
-	Name string `validate:"NotEmpty"`
-	Email string `validate:"NotEmpty"`
-}
-
-func TestUserValidation(t *testing.T) {
-
-    tests := []struct {
-        User   *User
-        Valid  bool
-        Fields map[string]struct{}
-    }{
-		// In this test we expect both the Name and Email fields to fail validation:
-		// we're passing an empty User object into validation
-        {
-            User:  &User{},
-            Valid: false,
-			// These fields should be present in ValidationError.Fields as failures
-            Fields: map[string]struct{}{
-                "Name":        struct{}{},
-                "Email":        struct{}{},
-            },
-        },
-    }
-
-    for _, v := range tests {
-        err := validate.Run(v.User)
-
-        if v.Valid && err != nil {
-            t.Fatalf("Unexpected validation error: %s", err)
-        }
-
-        if !v.Valid && err == nil {
-            t.Fatal("Expected validation error")
-        }
-
-		// Check that the fields were validated as we expect
-        if !v.Valid && err != nil {
-			// Ensure we were passed a ValidationError:
-			// if a validaiton method wasn't present this error will
-			// be of some other type.
-            vErr, ok := err.(validate.ValidationError)
-            if !ok {
-                t.Fatalf(err.Error())
-            }
-
-			// Check the failed fields matches what we expect
-            if len(v.Fields) > 0 && !reflect.DeepEqual(v.Fields, vErr.Fields) {
-                t.Fatal()
-            }
-        }
-    }
-}
-```
-
-MIT licence.
-
-Extracted from https://keepupdated.co - originally built September 2013,
-maintained since then.
