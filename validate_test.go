@@ -56,11 +56,11 @@ func TestAnonymousStructs(t *testing.T) {
 		t.Fatalf("Expected ValidationError to merge Anonymous Struct errors")
 	}
 
-	if _, ok := vErr.Err["Name"]; !ok {
+	if _, ok := vErr.Err["name"]; !ok {
 		t.Fatalf("Expected ValidationError.Field to contain standard field names")
 	}
 
-	if _, ok := vErr.Err["Email"]; !ok {
+	if _, ok := vErr.Err["email"]; !ok {
 		t.Fatalf("Expected ValidationError.Field to contain anonymous field names")
 	}
 }
@@ -548,8 +548,28 @@ func TestValidateFields(t *testing.T) {
 		t.Fatal(vErr)
 	}
 
-	if _, ok := vErr.Err["Invalid"]; !ok {
+	if _, ok := vErr.Err["invalid"]; !ok {
 		t.Fatal(vErr)
 	}
+}
 
+func TestValidateStructWithTags(t *testing.T) {
+
+	type TestStruct struct {
+		TestString string `validate:"NotEmpty"`
+	}
+
+	err := Run(TestStruct{})
+
+	if err == nil {
+		t.Error("Expected there to be an error")
+	}
+
+	ve := CastError(err)
+
+	errMap := ve.Errors()
+
+	if errMap["testString"] != "Field 'TestString' is empty" {
+		t.Error("Expected error message to be Field 'TestString' is empty")
+	}
 }
