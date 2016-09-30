@@ -4,7 +4,6 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
-	"unicode"
 
 	"github.com/stuwilli/govalidate/rules"
 )
@@ -16,9 +15,9 @@ type ValidationError struct {
 
 func (ve *ValidationError) addFailure(field, msg string) {
 
-	a := []rune(field)
-	a[0] = unicode.ToLower(a[0])
-	field = string(a)
+	// a := []rune(field)
+	// a[0] = unicode.ToLower(a[0])
+	// field = string(a)
 	ve.Err[field] = msg
 }
 
@@ -72,6 +71,7 @@ func Run(object interface{}, fieldsSlice ...string) error {
 	for i := 0; i < value.NumField(); i++ {
 		var validateTag string
 		var validateError error
+		var fieldName string
 
 		// Is this an anonymous struct? If so, we also need to validate on this.
 		if typ.Field(i).Anonymous == true {
@@ -98,12 +98,18 @@ func Run(object interface{}, fieldsSlice ...string) error {
 			}
 		}
 
+		if fieldName = typ.Field(i).Tag.Get("json"); fieldName != "" {
+			fieldName = strings.Split(fieldName, ",")[0]
+		} else {
+			fieldName = typ.Field(i).Name
+		}
+
 		if validateTag = typ.Field(i).Tag.Get("validate"); validateTag == "" {
 			continue
 		}
 
 		// Validate this particular field against the options in our tag
-		if validateError = validateField(value.Field(i).Interface(), typ.Field(i).Name, validateTag); validateError == nil {
+		if validateError = validateField(value.Field(i).Interface(), fieldName, validateTag); validateError == nil {
 			continue
 		}
 
@@ -114,7 +120,7 @@ func Run(object interface{}, fieldsSlice ...string) error {
 		}
 
 		pass = false
-		err.addFailure(typ.Field(i).Name, validateError.Error())
+		err.addFailure(fieldName, validateError.Error())
 	}
 
 	if pass {
