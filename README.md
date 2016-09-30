@@ -3,7 +3,7 @@ Govalidate
 
 Forked from [Amasses](https://github.com/amasses/govalidate) fork of [Tonyhb's](https://github.com/tonyhb/govalidate) govalidate project.
 
-This fork has been reworked to return errors as a key value map.
+This fork has been reworked to return errors as a key value map. Field names in error messages will also be taken from JSON struct tags when available.
 
 Simple, fast and *extensible* validation for Go structs, using tags in all their
 goodness. It also validates anonymous structs automatically.
